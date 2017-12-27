@@ -996,7 +996,9 @@ public class IoTDB implements IDatebase {
 				try {
 					statement = connection.createStatement();
 					String sql = null;
+					int line = 0;
 					while ((sql = br.readLine()) != null ) {
+						line ++;
 						if(!sql.startsWith("#") && !sql.equals("")) {
 							count++;
 							int lines = 0;
@@ -1017,7 +1019,10 @@ public class IoTDB implements IDatebase {
 								}
 							}catch (SQLException e){
 								errorNum++;
-								LOGGER.error("Execute ' {} ' failed !", sql);
+								LOGGER.error("Line {} : Execute ' {} ' failed !",
+										line,
+										sql
+								);
 							}
 							statement.close();
 							endTime = System.currentTimeMillis();
