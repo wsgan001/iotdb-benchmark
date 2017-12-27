@@ -131,7 +131,7 @@ public class App {
 			datebase = idbFactory.buildDB(mysql.getLabID());
 			datebase.init();
 			exeSQLFromFileStartTime = System.currentTimeMillis();
-			SQLCount = datebase.exeSQLFromFileByOneBatch();
+			datebase.exeSQLFromFileByOneBatch();
 			datebase.close();
 			exeSQLFromFileEndTime = System.currentTimeMillis();
 			exeSQLFromFileTime = (exeSQLFromFileEndTime - exeSQLFromFileStartTime) / 1000.0f;
@@ -141,12 +141,13 @@ public class App {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		/*
 		LOGGER.info("Execute SQL from file {} by one batch cost {} seconds. Mean rate {} SQL/s",
 				config.SQL_FILE,
 				exeSQLFromFileTime,
 				1.0f * SQLCount / exeSQLFromFileTime
 				);
-
+		*/
 
 		//加入新版的mysql表中
 		mysql.closeMysql();

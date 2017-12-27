@@ -961,7 +961,7 @@ public class IoTDB implements IDatebase {
 	}
 
 	@Override
-	public int exeSQLFromFileByOneBatch() throws SQLException{
+	public void exeSQLFromFileByOneBatch() throws SQLException{
 		Statement statement;
 		int count = 0;
 		long startTime;
@@ -1002,24 +1002,27 @@ public class IoTDB implements IDatebase {
 							int lines = 0;
 
 							startTime = System.currentTimeMillis();
-							boolean isSuccess = statement.execute(sql);
-							ResultSet resultSet = statement.getResultSet();
-							while (resultSet.next()) {
-								lines++;
+							try {
+								boolean hasResult = statement.execute(sql);
+								if (hasResult) {
+									ResultSet resultSet = statement.getResultSet();
+									while (resultSet.next()) {
+										lines++;
 //				int sensorNum = sensorList.size();
 //				builder.append(" \ntimestamp = ").append(resultSet.getString(0)).append("; ");
 //				for (int i = 1; i <= sensorNum; i++) {
 //					builder.append(resultSet.getString(i)).append("; ");
 //				}
+									}
+								}
+							}catch (SQLException e){
+								errorNum++;
 							}
 							statement.close();
 							endTime = System.currentTimeMillis();
 
 							costTime = endTime - startTime;
 							totalCostTime += costTime;
-							if(!isSuccess){
-								errorNum++;
-							}
 							LOGGER.info("Execute one SQL from file, resultSet size is {}, it costs {} ms, current total time {} ms",
 									lines,
 									costTime,
@@ -1033,7 +1036,8 @@ public class IoTDB implements IDatebase {
 					if (errorNum > 0) {
 						LOGGER.info("Execute failed, failed {} SQL! ", errorNum);
 					}
-					LOGGER.info("Execute SQL from file finished, it costs {} seconds, mean rate {} SQL/s .",
+					LOGGER.info("Execute SQL from file {} finished, it costs {} seconds, mean rate {} SQL/s .",
+							config.SQL_FILE,
 							totalCostTime / 1000.0f,
 							1000.0f * (count - errorNum) / totalCostTime
 					);
@@ -1055,7 +1059,6 @@ public class IoTDB implements IDatebase {
 		} else {
 			LOGGER.error("Execute SQL from file mode: SQL file not found.");
 		}
-		return 0;
 	}
 
 	private void writeSQLIntoFile(String sql, String gen_data_file_path) {

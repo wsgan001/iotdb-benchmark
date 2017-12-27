@@ -571,8 +571,8 @@ public class InfluxDBV2 implements IDatebase {
     }
 
 	@Override
-	public int exeSQLFromFileByOneBatch() {
-		return 0;
+	public void exeSQLFromFileByOneBatch() {
+
 	}
 
 //    /**
