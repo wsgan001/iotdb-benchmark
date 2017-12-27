@@ -964,13 +964,16 @@ public class IoTDB implements IDatebase {
 	public int exeSQLFromFileByOneBatch() throws SQLException{
 		Statement statement;
 		int count = 0;
-		int[] result;
+		long startTime;
+		long endTime;
+		long costTime;
+		long totalCostTime = 0;
 		int errorNum = 0;
 		File file = new File(config.SQL_FILE);
 		if(file.exists()) {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
-
+				/*
 				try {
 					statement = connection.createStatement();
 					String line = null;
@@ -987,19 +990,54 @@ public class IoTDB implements IDatebase {
 					statement.close();
 					long endTime = System.currentTimeMillis();
 					long costTime = endTime - startTime;
-					for (int i = 0; i < result.length; i++) {
-						if (result[i] == -1) {
-							errorNum++;
+					*/
+
+
+				try {
+					statement = connection.createStatement();
+					String sql = null;
+					while ((sql = br.readLine()) != null ) {
+						if(!sql.startsWith("#") && !sql.equals("")) {
+							count++;
+							int lines = 0;
+
+							startTime = System.currentTimeMillis();
+							boolean isSuccess = statement.execute(sql);
+							ResultSet resultSet = statement.getResultSet();
+							while (resultSet.next()) {
+								lines++;
+//				int sensorNum = sensorList.size();
+//				builder.append(" \ntimestamp = ").append(resultSet.getString(0)).append("; ");
+//				for (int i = 1; i <= sensorNum; i++) {
+//					builder.append(resultSet.getString(i)).append("; ");
+//				}
+							}
+							statement.close();
+							endTime = System.currentTimeMillis();
+
+							costTime = endTime - startTime;
+							totalCostTime += costTime;
+							if(!isSuccess){
+								errorNum++;
+							}
+							LOGGER.info("Execute one SQL from file, resultSet size is {}, it costs {} ms, current total time {} ms",
+									lines,
+									costTime,
+									totalCostTime
+							);
+
 						}
 					}
+
+
 					if (errorNum > 0) {
-						LOGGER.info("Batch insert failed, the failed number is {}! ", errorNum);
-					} else {
-						LOGGER.info("Execute SQL from file , it costs {} seconds, mean rate {} SQL/s",
-								costTime / 1000.0f,
-								1000.0f * count / costTime
-								);
+						LOGGER.info("Execute failed, failed {} SQL! ", errorNum);
 					}
+					LOGGER.info("Execute SQL from file finished, it costs {} seconds, mean rate {} SQL/s .",
+							totalCostTime / 1000.0f,
+							1000.0f * (count - errorNum) / totalCostTime
+					);
+
 
 					//mySql.saveInsertProcess(loopIndex, (endTime - startTime) / 1000.0, totalTime.get() / 1000.0, errorNum,config.REMARK);
 
