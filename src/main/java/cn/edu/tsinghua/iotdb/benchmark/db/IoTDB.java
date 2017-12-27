@@ -1017,29 +1017,30 @@ public class IoTDB implements IDatebase {
 								}
 							}catch (SQLException e){
 								errorNum++;
+								LOGGER.error("Execute ' {} ' failed !", sql);
 							}
 							statement.close();
 							endTime = System.currentTimeMillis();
 
 							costTime = endTime - startTime;
 							totalCostTime += costTime;
-							LOGGER.info("Execute one SQL from file, resultSet size is {}, it costs {} ms, current total time {} ms",
+							LOGGER.info("Execute one SQL from file, resultSet size is {}, it costs {} ms, current total time {} ms, the SQL : {}",
 									lines,
 									costTime,
-									totalCostTime
+									totalCostTime,
+									sql
 							);
 
 						}
 					}
 
 
-					if (errorNum > 0) {
-						LOGGER.info("Execute failed, failed {} SQL! ", errorNum);
-					}
-					LOGGER.info("Execute SQL from file {} finished, it costs {} seconds, mean rate {} SQL/s .",
-							config.SQL_FILE,
+
+					LOGGER.info("Execute {} SQL from file finished, it costs {} seconds, mean rate {} SQL/s . {} SQL execute failed.",
+							count,
 							totalCostTime / 1000.0f,
-							1000.0f * (count - errorNum) / totalCostTime
+							1000.0f * (count - errorNum) / totalCostTime,
+							errorNum
 					);
 
 
