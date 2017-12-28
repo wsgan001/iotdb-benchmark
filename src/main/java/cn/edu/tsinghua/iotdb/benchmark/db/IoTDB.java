@@ -1019,9 +1019,10 @@ public class IoTDB implements IDatebase {
 								}
 							}catch (SQLException e){
 								errorNum++;
-								LOGGER.error("Line {} : Execute ' {} ' failed !",
+								LOGGER.error("Line {} : Execute ' {} ' failed ! Because {}",
 										line,
-										sql
+										sql,
+										e
 								);
 							}
 							statement.close();
@@ -1035,7 +1036,6 @@ public class IoTDB implements IDatebase {
 									totalCostTime,
 									sql
 							);
-
 						}
 					}
 
