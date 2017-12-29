@@ -246,13 +246,13 @@ public class IoTDB implements IDatebase {
 
 			if (errorNum > 0) {
 				LOGGER.info("Batch insert failed, the failed number is {}! ", errorNum);
+				errorCount.set(errorCount.get() + errorNum);
 			} else {
 				LOGGER.info("{} execute {} loop, it costs {}s, totalTime {}s, throughput {} points/s",
 						Thread.currentThread().getName(), loopIndex, costTime / 1000.0,
 						(totalTime.get() + costTime) / 1000.0,
 						(config.CACHE_NUM * config.SENSOR_NUMBER / (double) costTime) * 1000);
 				totalTime.set(totalTime.get() + costTime);
-				errorCount.set(errorCount.get() + errorNum);
 			}
 			mySql.saveInsertProcess(loopIndex, costTime / 1000.0, totalTime.get() / 1000.0, errorNum, config.REMARK);
 		} catch (SQLException e) {
@@ -308,13 +308,14 @@ public class IoTDB implements IDatebase {
 			}
 			if (errorNum > 0) {
 				LOGGER.info("Batch insert failed, the failed number is {}! ", errorNum);
+				errorCount.set(errorCount.get() + errorNum);
 			} else {
 				LOGGER.info("{} execute {} loop, it costs {}s, totalTime {}s, throughput {} points/s",
 						Thread.currentThread().getName(), loopIndex, costTime / 1000.0,
 						(totalTime.get() + costTime) / 1000.0,
 						(config.CACHE_NUM * config.SENSOR_NUMBER / (double) costTime) * 1000);
 				totalTime.set(totalTime.get() + costTime);
-				errorCount.set(errorCount.get() + errorNum);
+
 			}
 
 			mySql.saveInsertProcess(loopIndex, (endTime - startTime) / 1000.0, totalTime.get() / 1000.0, errorNum,
@@ -352,13 +353,14 @@ public class IoTDB implements IDatebase {
 
 			if (errorNum > 0) {
 				LOGGER.info("Batch insert failed, the failed number is {}! ", errorNum);
+				errorCount.set(errorCount.get() + errorNum);
 			} else {
 				LOGGER.info("{} execute {} loop, it costs {}s, totalTime {}s, throughput {} items/s",
 						Thread.currentThread().getName(), batchIndex, (endTime - startTime) / 1000.0,
 						((totalTime.get() + (endTime - startTime)) / 1000.0),
 						(cons.size() / (double) (endTime - startTime)) * 1000);
 				totalTime.set(totalTime.get() + (endTime - startTime));
-				errorCount.set(errorCount.get() + errorNum);
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -897,8 +899,8 @@ public class IoTDB implements IDatebase {
 			float pointByteSize = (deltaSize + overflowSize) *
 					1024.0f / (config.SENSOR_NUMBER * config.DEVICE_NUMBER * config.LOOP *
 					config.CACHE_NUM);
-			LOGGER.info("Average size of data point ,{},Byte ,ENCODING = ,{}, dir size: delta ,{},KB overflow ,{},KB "
-					, pointByteSize, config.ENCODING, deltaSize, overflowSize);
+			LOGGER.info("ENCODING = {} , dir size: delta {} KB; overflow {} KB "
+					,  config.ENCODING, deltaSize, overflowSize);
 		} else {
 			LOGGER.info("Can not find data directory!");
 		}
@@ -941,13 +943,14 @@ public class IoTDB implements IDatebase {
 			}
 			if (errorNum > 0) {
 				LOGGER.info("Batch insert failed, the failed number is {}! ", errorNum);
+				errorCount.set(errorCount.get() + errorNum);
 			} else {
 				LOGGER.info("{} execute {} loop, it costs {}s, totalTime {}s, throughput {} points/s",
 						Thread.currentThread().getName(), loopIndex, costTime / 1000.0,
 						(totalTime.get() + costTime) / 1000.0,
 						(config.CACHE_NUM * config.SENSOR_NUMBER / (double) costTime) * 1000);
 				totalTime.set(totalTime.get() + costTime);
-				errorCount.set(errorCount.get() + errorNum);
+
 			}
 
 			mySql.saveInsertProcess(loopIndex, (endTime - startTime) / 1000.0, totalTime.get() / 1000.0, errorNum,
