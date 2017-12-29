@@ -551,8 +551,8 @@ public class InfluxDBV2 implements IDatebase {
     }
 
     @Override
-    public void getUnitPointStorageSize() throws SQLException {
-
+    public ArrayList<String> getUnitPointStorageSize() throws SQLException {
+		return null;
     }
 
     @Override

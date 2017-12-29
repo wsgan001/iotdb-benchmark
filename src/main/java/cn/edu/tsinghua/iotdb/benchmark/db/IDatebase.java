@@ -2,6 +2,7 @@ package cn.edu.tsinghua.iotdb.benchmark.db;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface IDatebase {
 	void close() throws SQLException;
 
 	void flush() throws SQLException;
-	void getUnitPointStorageSize() throws SQLException;
+	ArrayList<String> getUnitPointStorageSize() throws SQLException;
 	long getTotalTimeInterval() throws SQLException;
 	void executeOneQuery(List<Integer> devices, int index, long startTime,
 			QueryClientThread client, ThreadLocal<Long> errorCount);

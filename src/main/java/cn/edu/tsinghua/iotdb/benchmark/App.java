@@ -5,6 +5,7 @@ import cn.edu.tsinghua.iotdb.benchmark.db.*;
 import cn.edu.tsinghua.iotdb.benchmark.sersyslog.*;
 
 import java.io.*;
+import java.nio.FloatBuffer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -77,12 +78,32 @@ public class App {
 				try {
 					datebase = idbFactory.buildDB(mysql.getLabID());
 					datebase.init();
-					LOGGER.info("Before flush:");
-					datebase.getUnitPointStorageSize();
+
+					File lastResultFile = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
 					datebase.flush();
-					LOGGER.info("After flush:");
-					datebase.getUnitPointStorageSize();
+					ArrayList<String> sizeResults = datebase.getUnitPointStorageSize();
+					long lastSize ;
+					long thisSize ;
+					if (lastResultFile.exists()) {
+						HashMap<String,String> lastPeriodResults = getLastPeriodResults(config);
+						LOGGER.info("Last period data size: {} KB ( delta {} KB; overflow {} KB )",
+								lastPeriodResults.get("DataSize"),
+								lastPeriodResults.get("DeltaSize"),
+								lastPeriodResults.get("OverflowSize")
+						);
+						lastSize = Long.parseLong(lastPeriodResults.get("DataSize"));
+						thisSize = Long.parseLong(sizeResults.get(0));
+						LOGGER.info("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
+								sizeResults.get(0),
+								sizeResults.get(1),
+								sizeResults.get(2),
+								thisSize - lastSize
+						);
+
+					}
+
 					datebase.close();
+
 
 				} catch (SQLException e) {
 					LOGGER.error("Fail to init database becasue {}", e.getMessage());
@@ -200,10 +221,8 @@ public class App {
 					totalTime = c;
 				}
 			}
-			long totalPoints = config.SENSOR_NUMBER * config.DEVICE_NUMBER * config.LOOP * config.CACHE_NUM;
-			if(config.DB_SWITCH.equals(Constants.DB_IOT)&&config.MUL_DEV_BATCH){
-				totalPoints = config.SENSOR_NUMBER * config.CLIENT_NUMBER * config.LOOP * config.CACHE_NUM ;
-			}
+			long totalPoints = config.LOOP * config.CACHE_NUM;
+
 			switch (config.DB_SWITCH) {
 				case Constants.DB_IOT:
 					totalErrorPoint = getErrorNumIoT(totalInsertErrorNums);
@@ -215,10 +234,13 @@ public class App {
 					throw new SQLException("unsupported database " + config.DB_SWITCH);
 			}
 			LOGGER.info(
-					"GROUP_NUMBER = ,{}, DEVICE_NUMBER = ,{}, SENSOR_NUMBER = ,{}, CACHE_NUM = ,{}, POINT_STEP = ,{}, LOOP = ,{}, MUL_DEV_BATCH = ,{}",
-					config.GROUP_NUMBER, config.DEVICE_NUMBER, config.SENSOR_NUMBER,
+					"TIMESERIES_NAME = ,{},  CACHE_NUM = ,{}, POINT_STEP = ,{}, LOOP = ,{}, IS_OVERFLOW = ,{}, ENCODING = {}",
+					config.STORAGE_GROUP_NAME + "." + config.TIMESERIES_NAME,
 					config.CACHE_NUM, config.POINT_STEP,
-					config.LOOP, config.MUL_DEV_BATCH);
+					config.LOOP,
+					config.IS_OVERFLOW,
+					config.ENCODING
+			);
 
 			LOGGER.info(
 					"Loaded ,{}, points in ,{},s with ,{}, workers (mean rate ,{}, points/s)",
@@ -370,10 +392,14 @@ public class App {
 			*/
 
 			LOGGER_RESULT.error(
-					"Writing test parameters: GROUP_NUMBER={}, DEVICE_NUMBER={}, SENSOR_NUMBER={}, CACHE_NUM={}, POINT_STEP={}, LOOP={}, MUL_DEV_BATCH={}, IS_OVERFLOW={}",
+					"Writing test parameters: GROUP_NUMBER={}, DEVICE_NUMBER={}, SENSOR_NUMBER={}, CACHE_NUM={}, POINT_STEP={}, LOOP={}, MUL_DEV_BATCH={}, IS_OVERFLOW={}, ENCODING = {}",
 					config.GROUP_NUMBER, config.DEVICE_NUMBER, config.SENSOR_NUMBER,
 					config.CACHE_NUM, config.POINT_STEP,
-					config.LOOP, config.MUL_DEV_BATCH, config.IS_OVERFLOW);
+					config.LOOP,
+					config.MUL_DEV_BATCH,
+					config.IS_OVERFLOW,
+					config.ENCODING
+			);
 
 			/*
 			LOGGER_RESULT.error("Loaded,{},points in,{},seconds, mean rate,{},points/s, Total error point num is,{},create schema cost,{},seconds",
@@ -388,13 +414,18 @@ public class App {
 			File file = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
 			float lastRate = 1;
 			if (file.exists()) {
-				LOGGER_RESULT.error("Last period loaded {} points in {} seconds, mean rate {} points/s, total error point num is {} , create schema cost {} seconds.",
+				LOGGER_RESULT.error("Last period loaded {} points in {} seconds, mean rate {} points/s, total error point num is {} , create schema cost {} seconds, data size {} KB ( delta {} KB; overflow {} KB )",
 						lastPeriodResults.get("WriteTotalPoint"),
 						lastPeriodResults.get("WriteTotalTime"),
 						lastPeriodResults.get("WriteMeanRate"),
 						lastPeriodResults.get("WriteErrorNum"),
-						lastPeriodResults.get("WriteSchemaCost"));
+						lastPeriodResults.get("WriteSchemaCost"),
+						lastPeriodResults.get("DataSize"),
+						lastPeriodResults.get("DeltaSize"),
+						lastPeriodResults.get("OverflowSize")
+				);
 				lastRate = Float.parseFloat(lastPeriodResults.get("WriteMeanRate"));
+
 			}
 
 			float thisRate = 1000.0f * (totalPoints - totalErrorPoint) / (float) totalTime;
@@ -500,6 +531,10 @@ public class App {
 								lastResults.put("GroQueryRate", (writeResult[20]));
 								lastResults.put("GroQueryPointRate", (writeResult[23]));
 								lastResults.put("GroQueryErrorNum", (writeResult[31]));
+							} else if (writeResult[2].startsWith("dat")) {
+								lastResults.put("DataSize", (writeResult[4]));
+								lastResults.put("DeltaSize", (writeResult[8]));
+								lastResults.put("OverflowSize", (writeResult[11]));
 							}
 						}
 					}

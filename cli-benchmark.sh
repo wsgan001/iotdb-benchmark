@@ -30,6 +30,7 @@ mvn clean package -Dmaven.test.skip=true
 
 ssh $SERVER_HOST "rm $REMOTE_BENCHMARK_HOME/conf/config.properties"
 scp $BENCHMARK_HOME/conf/config.properties $SERVER_HOST:$REMOTE_BENCHMARK_HOME/conf
+scp $BENCHMARK_HOME/logs/lastPeriodResult.txt $SERVER_HOST:$REMOTE_BENCHMARK_HOME/logs
 
 #start server system information recording
 #ssh -p 1309 $SERVER_HOST "sh $REMOTE_BENCHMARK_HOME/ser-benchmark.sh > /dev/null 2>&1 &"
@@ -60,8 +61,8 @@ ssh $SERVER_HOST "touch $LOG_STOP_FLAG_PATH/log_stop_flag"
 #ssh $SERVER_HOST "grep Statistic $LOG_STOP_FLAG_PATH/logs/log_info.log | tail -n 1 " >> $BENCHMARK_HOME/logs/MemoryMonitor.log
 
 if [ "${DB#*=}" = "IoTDB" -a "${QUERY_MODE#*=}" = "false" ]; then
-    ssh $SERVER_HOST "tail -n 1 $REMOTE_BENCHMARK_HOME/logs/log_info.log" >> $BENCHMARK_HOME/logs/log_info.log
-    ssh $SERVER_HOST "tail -n 1 $REMOTE_BENCHMARK_HOME/logs/log_info.log" >> $BENCHMARK_HOME/logs/log_result_info.txt
+    ssh $SERVER_HOST "tail -n 2 $REMOTE_BENCHMARK_HOME/logs/log_info.log" >> $BENCHMARK_HOME/logs/log_info.log
+    ssh $SERVER_HOST "tail -n 2 $REMOTE_BENCHMARK_HOME/logs/log_info.log" >> $BENCHMARK_HOME/logs/log_result_info.txt
 fi
 
 echo '------Client Test Complete Time------'

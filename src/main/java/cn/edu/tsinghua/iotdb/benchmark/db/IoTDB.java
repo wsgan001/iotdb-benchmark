@@ -890,20 +890,25 @@ public class IoTDB implements IDatebase {
 	}
 
 	@Override
-	public void getUnitPointStorageSize() throws SQLException {
+	public ArrayList<String> getUnitPointStorageSize() throws SQLException {
+		ArrayList<String> results = new ArrayList<>();
 		File dataDir = new File(config.LOG_STOP_FLAG_PATH + "/data");
+		long deltaSize = 0;
+		long overflowSize = 0;
+		long dataSize = 0;
 		if (dataDir.exists() && dataDir.isDirectory()) {
-			long deltaSize = getDirTotalSize(config.LOG_STOP_FLAG_PATH + "/data/delta") ;
+			deltaSize = getDirTotalSize(config.LOG_STOP_FLAG_PATH + "/data/delta") ;
 			//long dataSize = getDirTotalSize(config.LOG_STOP_FLAG_PATH + "/data") ;
-			long overflowSize = getDirTotalSize(config.LOG_STOP_FLAG_PATH + "/data/overflow") ;
-			float pointByteSize = (deltaSize + overflowSize) *
-					1024.0f / (config.SENSOR_NUMBER * config.DEVICE_NUMBER * config.LOOP *
-					config.CACHE_NUM);
-			LOGGER.info("ENCODING = {} , dir size: delta {} KB; overflow {} KB "
-					,  config.ENCODING, deltaSize, overflowSize);
+			overflowSize = getDirTotalSize(config.LOG_STOP_FLAG_PATH + "/data/overflow") ;
+			dataSize = deltaSize + overflowSize;
+
 		} else {
-			LOGGER.info("Can not find data directory!");
+			LOGGER.error("Can not find data directory!");
 		}
+		results.add(String.valueOf(dataSize));
+		results.add(String.valueOf(deltaSize));
+		results.add(String.valueOf(overflowSize));
+		return results;
 	}
 
 	@Override

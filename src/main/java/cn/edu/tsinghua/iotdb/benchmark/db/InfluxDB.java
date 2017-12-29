@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -202,8 +203,8 @@ public class InfluxDB implements IDatebase {
     }
 
     @Override
-    public void getUnitPointStorageSize() throws SQLException {
-
+    public ArrayList<String> getUnitPointStorageSize() throws SQLException {
+        return null;
     }
 
     @Override
