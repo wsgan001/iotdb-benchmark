@@ -68,15 +68,14 @@ public class App {
 					}
 				}
 
-				MySqlLog mysql = new MySqlLog();
-				mysql.initMysql(System.currentTimeMillis());
+
 				IDBFactory idbFactory = null;
 				idbFactory = getDBFactory(config);
 
 				IDatebase datebase;
 
 				try {
-					datebase = idbFactory.buildDB(mysql.getLabID());
+					datebase = idbFactory.buildDB(mySql.getLabID());
 					datebase.init();
 
 					File lastResultFile = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
