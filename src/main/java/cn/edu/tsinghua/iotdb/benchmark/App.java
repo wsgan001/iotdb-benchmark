@@ -411,15 +411,12 @@ public class App {
 			File file = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
 			float lastRate = 1;
 			if (file.exists()) {
-				LOGGER_RESULT.error("Last period loaded {} points in {} seconds, mean rate {} points/s, total error point num is {} , create schema cost {} seconds, data size {} KB ( delta {} KB; overflow {} KB )",
+				LOGGER_RESULT.error("Last period loaded {} points in {} seconds, mean rate {} points/s, total error point num is {} , create schema cost {} seconds",
 						lastPeriodResults.get("WriteTotalPoint"),
 						lastPeriodResults.get("WriteTotalTime"),
 						lastPeriodResults.get("WriteMeanRate"),
 						lastPeriodResults.get("WriteErrorNum"),
-						lastPeriodResults.get("WriteSchemaCost"),
-						lastPeriodResults.get("DataSize"),
-						lastPeriodResults.get("DeltaSize"),
-						lastPeriodResults.get("OverflowSize")
+						lastPeriodResults.get("WriteSchemaCost")
 				);
 				lastRate = Float.parseFloat(lastPeriodResults.get("WriteMeanRate"));
 
