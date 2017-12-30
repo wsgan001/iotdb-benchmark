@@ -67,11 +67,11 @@ public class App {
 					}
 				}
 
+				if(!config.IS_QUERY_TEST) {
+					IDBFactory idbFactory = null;
+					idbFactory = getDBFactory(config);
 
-				IDBFactory idbFactory = null;
-				idbFactory = getDBFactory(config);
-
-				IDatebase datebase;
+					IDatebase datebase;
 
 
 					datebase = idbFactory.buildDB(mySql.getLabID());
@@ -81,9 +81,9 @@ public class App {
 					datebase.flush();
 					ArrayList<String> sizeResults = datebase.getUnitPointStorageSize();
 					long lastSize = 0;
-					long thisSize ;
-					if (lastResultFile.exists()) {
-						HashMap<String,String> lastPeriodResults = getLastPeriodResults(config);
+					long thisSize;
+					//if (lastResultFile.exists()) {
+						HashMap<String, String> lastPeriodResults = getLastPeriodResults(config);
 						LOGGER_RESULT.error("Last period data size: {} KB ( delta {} KB; overflow {} KB )",
 								lastPeriodResults.get("DataSize"),
 								lastPeriodResults.get("DeltaSize"),
@@ -93,18 +93,18 @@ public class App {
 						lastSize = Long.parseLong(lastPeriodResults.get("DataSize"));
 
 
-					}
+					//}
 
-				thisSize = Long.parseLong(sizeResults.get(0));
-				LOGGER_RESULT.error("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
-						sizeResults.get(0),
-						sizeResults.get(1),
-						sizeResults.get(2),
-						thisSize - lastSize
-				);
+					thisSize = Long.parseLong(sizeResults.get(0));
+					LOGGER_RESULT.error("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
+							sizeResults.get(0),
+							sizeResults.get(1),
+							sizeResults.get(2),
+							thisSize - lastSize
+					);
 					datebase.close();
 
-
+				}
 
 
 
