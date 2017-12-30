@@ -37,8 +37,8 @@ public class App {
 		}
 		Config config = ConfigDescriptor.getInstance().getConfig();
 		if (config.SERVER_MODE) {
-			MySqlLog mySql = new MySqlLog();
-			mySql.initMysql(System.currentTimeMillis());
+			//MySqlLog mySql = new MySqlLog();
+			//mySql.initMysql(System.currentTimeMillis());
 			File dir = new File(config.LOG_STOP_FLAG_PATH);
 			if (dir.exists() && dir.isDirectory()) {
 				File file = new File(config.LOG_STOP_FLAG_PATH + "/log_stop_flag");
@@ -52,8 +52,8 @@ public class App {
 					LOGGER.info("内存使用率,{}", MemUsage.getInstance().get());
 					LOGGER.info("磁盘IO使用率,{}", ioUsageList.get(1));
 					LOGGER.info("eth0接收和发送速率,{},{},KB/s", netUsageList.get(0), netUsageList.get(1));
-					mySql.insertSERVER_MODE(ioUsageList.get(0), MemUsage.getInstance().get(), ioUsageList.get(1),
-							netUsageList.get(0), netUsageList.get(1),"");
+					//mySql.insertSERVER_MODE(ioUsageList.get(0), MemUsage.getInstance().get(), ioUsageList.get(1),
+							//netUsageList.get(0), netUsageList.get(1),"");
 					try {
 						Thread.sleep(interval * 1000);
 					} catch (InterruptedException e) {
@@ -73,8 +73,8 @@ public class App {
 				idbFactory = getDBFactory(config);
 
 				IDatebase datebase;
-
-
+				MySqlLog mySql = new MySqlLog();
+				mySql.initMysql(System.currentTimeMillis());
 					datebase = idbFactory.buildDB(mySql.getLabID());
 					datebase.init();
 
