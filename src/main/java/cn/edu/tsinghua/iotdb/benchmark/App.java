@@ -49,16 +49,16 @@ public class App {
 				int interval = config.INTERVAL;
 				System.out.println("int interval = config.INTERVAL;");
 				// 检测所需的时间在目前代码的参数下至少为2秒
-				LOGGER.info("----------New Test Begin with interval about {} s----------", interval + 2);
+				LOGGER_RESULT.error("----------New Test Begin with interval about {} s----------", interval + 2);
 				System.out.println("LOGGER.info(\"----------New Test Begin with interval about {} s----------\", interval + 2);");
 				while (true) {
 					System.out.println("while (true) {");
 					ArrayList<Float> ioUsageList = IoUsage.getInstance().get();
 					ArrayList<Float> netUsageList = NetUsage.getInstance().get();
-					LOGGER.info("CPU使用率,{}", ioUsageList.get(0));
-					LOGGER.info("内存使用率,{}", MemUsage.getInstance().get());
-					LOGGER.info("磁盘IO使用率,{}", ioUsageList.get(1));
-					LOGGER.info("eth0接收和发送速率,{},{},KB/s", netUsageList.get(0), netUsageList.get(1));
+					LOGGER_RESULT.error("CPU使用率,{}", ioUsageList.get(0));
+					LOGGER_RESULT.error("内存使用率,{}", MemUsage.getInstance().get());
+					LOGGER_RESULT.error("磁盘IO使用率,{}", ioUsageList.get(1));
+					LOGGER_RESULT.error("eth0接收和发送速率,{},{},KB/s", netUsageList.get(0), netUsageList.get(1));
 					mySql.insertSERVER_MODE(ioUsageList.get(0), MemUsage.getInstance().get(), ioUsageList.get(1),
 							netUsageList.get(0), netUsageList.get(1),"");
 					try {
@@ -69,7 +69,7 @@ public class App {
 					if (file.exists()) {
 						boolean f = file.delete();
 						if (!f) {
-							LOGGER.error("log_stop_flag 文件删除失败");
+							LOGGER_RESULT.error("log_stop_flag 文件删除失败");
 						}
 						break;
 					}
@@ -120,7 +120,7 @@ public class App {
 
 
 			} else {
-				LOGGER.error("LOG_STOP_FLAG_PATH not exist!");
+				LOGGER_RESULT.error("LOG_STOP_FLAG_PATH not exist!");
 			}
 		} else {
 			if (config.IS_GEN_DATA) {
