@@ -47,9 +47,12 @@ public class App {
 				File file = new File(config.LOG_STOP_FLAG_PATH + "/log_stop_flag");
 				System.out.println("File file = new File(config.LOG_STOP_FLAG_PATH + \"/log_stop_flag\");");
 				int interval = config.INTERVAL;
+				System.out.println("int interval = config.INTERVAL;");
 				// 检测所需的时间在目前代码的参数下至少为2秒
 				LOGGER.info("----------New Test Begin with interval about {} s----------", interval + 2);
+				System.out.println("LOGGER.info(\"----------New Test Begin with interval about {} s----------\", interval + 2);");
 				while (true) {
+					System.out.println("while (true) {");
 					ArrayList<Float> ioUsageList = IoUsage.getInstance().get();
 					ArrayList<Float> netUsageList = NetUsage.getInstance().get();
 					LOGGER.info("CPU使用率,{}", ioUsageList.get(0));
