@@ -26,39 +26,31 @@ import cn.edu.tsinghua.iotdb.benchmark.loadData.Storage;
 import cn.edu.tsinghua.iotdb.benchmark.mysql.MySqlLog;
 
 public class App {
-	private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SysLog.class);
 	private static final Logger LOGGER_RESULT = LoggerFactory.getLogger(App.class);
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-
 		CommandCli cli = new CommandCli();
 		if (!cli.init(args)) {
 			return;
 		}
 		Config config = ConfigDescriptor.getInstance().getConfig();
 		if (config.SERVER_MODE) {
-			System.out.println("if (config.SERVER_MODE) {");
 			MySqlLog mySql = new MySqlLog();
 			mySql.initMysql(System.currentTimeMillis());
 			File dir = new File(config.LOG_STOP_FLAG_PATH);
-			System.out.println("File dir = new File(config.LOG_STOP_FLAG_PATH);");
 			if (dir.exists() && dir.isDirectory()) {
-				System.out.println("if (dir.exists() && dir.isDirectory()) {");
 				File file = new File(config.LOG_STOP_FLAG_PATH + "/log_stop_flag");
-				System.out.println("File file = new File(config.LOG_STOP_FLAG_PATH + \"/log_stop_flag\");");
 				int interval = config.INTERVAL;
-				System.out.println("int interval = config.INTERVAL;");
 				// 检测所需的时间在目前代码的参数下至少为2秒
-				LOGGER_RESULT.error("----------New Test Begin with interval about {} s----------", interval + 2);
-				System.out.println("LOGGER.info(\"----------New Test Begin with interval about {} s----------\", interval + 2);");
+				LOGGER.info("----------New Test Begin with interval about {} s----------", interval + 2);
 				while (true) {
-					System.out.println("while (true) {");
 					ArrayList<Float> ioUsageList = IoUsage.getInstance().get();
 					ArrayList<Float> netUsageList = NetUsage.getInstance().get();
-					LOGGER_RESULT.error("CPU使用率,{}", ioUsageList.get(0));
-					LOGGER_RESULT.error("内存使用率,{}", MemUsage.getInstance().get());
-					LOGGER_RESULT.error("磁盘IO使用率,{}", ioUsageList.get(1));
-					LOGGER_RESULT.error("eth0接收和发送速率,{},{},KB/s", netUsageList.get(0), netUsageList.get(1));
+					LOGGER.info("CPU使用率,{}", ioUsageList.get(0));
+					LOGGER.info("内存使用率,{}", MemUsage.getInstance().get());
+					LOGGER.info("磁盘IO使用率,{}", ioUsageList.get(1));
+					LOGGER.info("eth0接收和发送速率,{},{},KB/s", netUsageList.get(0), netUsageList.get(1));
 					mySql.insertSERVER_MODE(ioUsageList.get(0), MemUsage.getInstance().get(), ioUsageList.get(1),
 							netUsageList.get(0), netUsageList.get(1),"");
 					try {
@@ -69,7 +61,7 @@ public class App {
 					if (file.exists()) {
 						boolean f = file.delete();
 						if (!f) {
-							LOGGER_RESULT.error("log_stop_flag 文件删除失败");
+							LOGGER.info("log_stop_flag 文件删除失败");
 						}
 						break;
 					}
@@ -88,7 +80,7 @@ public class App {
 					File lastResultFile = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
 					datebase.flush();
 					ArrayList<String> sizeResults = datebase.getUnitPointStorageSize();
-					long lastSize ;
+					long lastSize = 0;
 					long thisSize ;
 					if (lastResultFile.exists()) {
 						HashMap<String,String> lastPeriodResults = getLastPeriodResults(config);
@@ -97,17 +89,19 @@ public class App {
 								lastPeriodResults.get("DeltaSize"),
 								lastPeriodResults.get("OverflowSize")
 						);
+
 						lastSize = Long.parseLong(lastPeriodResults.get("DataSize"));
-						thisSize = Long.parseLong(sizeResults.get(0));
-						LOGGER_RESULT.error("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
-								sizeResults.get(0),
-								sizeResults.get(1),
-								sizeResults.get(2),
-								thisSize - lastSize
-						);
+
 
 					}
 
+				thisSize = Long.parseLong(sizeResults.get(0));
+				LOGGER_RESULT.error("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
+						sizeResults.get(0),
+						sizeResults.get(1),
+						sizeResults.get(2),
+						thisSize - lastSize
+				);
 					datebase.close();
 
 
@@ -120,7 +114,7 @@ public class App {
 
 
 			} else {
-				LOGGER_RESULT.error("LOG_STOP_FLAG_PATH not exist!");
+				LOGGER.error("LOG_STOP_FLAG_PATH not exist!");
 			}
 		} else {
 			if (config.IS_GEN_DATA) {
