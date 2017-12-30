@@ -77,7 +77,7 @@ public class App {
 					datebase = idbFactory.buildDB(mySql.getLabID());
 					datebase.init();
 
-					File lastResultFile = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
+					File lastResultFile = new File(config.REMOTE_LAST_RESULT_PATH + "/lastPeriodResult.txt");
 					datebase.flush();
 					ArrayList<String> sizeResults = datebase.getUnitPointStorageSize();
 					long lastSize = 0;
