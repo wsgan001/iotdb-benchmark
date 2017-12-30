@@ -74,7 +74,7 @@ public class App {
 
 				IDatebase datebase;
 
-				try {
+
 					datebase = idbFactory.buildDB(mySql.getLabID());
 					datebase.init();
 
@@ -85,14 +85,14 @@ public class App {
 					long thisSize ;
 					if (lastResultFile.exists()) {
 						HashMap<String,String> lastPeriodResults = getLastPeriodResults(config);
-						LOGGER.info("Last period data size: {} KB ( delta {} KB; overflow {} KB )",
+						LOGGER_RESULT.error("Last period data size: {} KB ( delta {} KB; overflow {} KB )",
 								lastPeriodResults.get("DataSize"),
 								lastPeriodResults.get("DeltaSize"),
 								lastPeriodResults.get("OverflowSize")
 						);
 						lastSize = Long.parseLong(lastPeriodResults.get("DataSize"));
 						thisSize = Long.parseLong(sizeResults.get(0));
-						LOGGER.info("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
+						LOGGER_RESULT.error("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
 								sizeResults.get(0),
 								sizeResults.get(1),
 								sizeResults.get(2),
@@ -104,10 +104,7 @@ public class App {
 					datebase.close();
 
 
-				} catch (SQLException e) {
-					LOGGER.error("Fail to init database becasue {}", e.getMessage());
-					return;
-				}
+
 
 
 				mySql.closeMysql();
