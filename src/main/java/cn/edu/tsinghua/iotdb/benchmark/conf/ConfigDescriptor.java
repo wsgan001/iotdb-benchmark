@@ -112,6 +112,7 @@ public class ConfigDescriptor {
 				config.IS_OTHER_MODE = Boolean.parseBoolean(properties.getProperty("IS_OTHER_MODE", config.IS_OTHER_MODE+""));
 				config.OTHER_MODE_CHOICE = properties.getProperty("OTHER_MODE_CHOICE", config.OTHER_MODE_CHOICE);
 				config.SQL_FILE = properties.getProperty("SQL_FILE", config.SQL_FILE);
+				config.REMOTE_LAST_RESULT_PATH = properties.getProperty("REMOTE_LAST_RESULT_PATH", config.REMOTE_LAST_RESULT_PATH);
 
 			} catch (IOException e) {
 				e.printStackTrace();

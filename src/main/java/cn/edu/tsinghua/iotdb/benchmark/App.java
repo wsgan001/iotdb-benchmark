@@ -67,23 +67,24 @@ public class App {
 					}
 				}
 
+				if(!config.IS_QUERY_TEST) {
+					IDBFactory idbFactory = null;
+					idbFactory = getDBFactory(config);
 
-				IDBFactory idbFactory = null;
-				idbFactory = getDBFactory(config);
-
-				IDatebase datebase;
+					IDatebase datebase;
 
 
 					datebase = idbFactory.buildDB(mySql.getLabID());
 					datebase.init();
 
-					File lastResultFile = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
+					File lastResultFile = new File(config.REMOTE_LAST_RESULT_PATH + "/lastPeriodResult.txt");
 					datebase.flush();
 					ArrayList<String> sizeResults = datebase.getUnitPointStorageSize();
 					long lastSize = 0;
-					long thisSize ;
+					long thisSize;
+					HashMap<String, String> lastPeriodResults = getLastPeriodResults(config.REMOTE_LAST_RESULT_PATH);
 					if (lastResultFile.exists()) {
-						HashMap<String,String> lastPeriodResults = getLastPeriodResults(config);
+
 						LOGGER_RESULT.error("Last period data size: {} KB ( delta {} KB; overflow {} KB )",
 								lastPeriodResults.get("DataSize"),
 								lastPeriodResults.get("DeltaSize"),
@@ -91,20 +92,18 @@ public class App {
 						);
 
 						lastSize = Long.parseLong(lastPeriodResults.get("DataSize"));
-
-
 					}
 
-				thisSize = Long.parseLong(sizeResults.get(0));
-				LOGGER_RESULT.error("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
-						sizeResults.get(0),
-						sizeResults.get(1),
-						sizeResults.get(2),
-						thisSize - lastSize
-				);
+					thisSize = Long.parseLong(sizeResults.get(0));
+					LOGGER_RESULT.error("This period data size: {} KB ( delta {} KB; overflow {} KB ), data size change {} KB",
+							sizeResults.get(0),
+							sizeResults.get(1),
+							sizeResults.get(2),
+							thisSize - lastSize
+					);
 					datebase.close();
 
-
+				}
 
 
 
@@ -407,7 +406,7 @@ public class App {
 					createSchemaTime);
 			*/
 
-			HashMap<String,String> lastPeriodResults = getLastPeriodResults(config);
+			HashMap<String,String> lastPeriodResults = getLastPeriodResults(config.LAST_RESULT_PATH);
 			File file = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
 			float lastRate = 1;
 			if (file.exists()) {
@@ -444,11 +443,11 @@ public class App {
 		
 	}
 
-	private static HashMap<String,String> getLastPeriodResults(Config config) {
-		File dir = new File(config.LAST_RESULT_PATH);
+	private static HashMap<String,String> getLastPeriodResults(String lastResultDir) {
+		File dir = new File(lastResultDir);
 		HashMap<String,String> lastResults = new HashMap<>();
 		if (dir.exists() && dir.isDirectory()) {
-			File file = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
+			File file = new File(lastResultDir + "/lastPeriodResult.txt");
 			if (file.exists()) {
 				BufferedReader br = null;
 				try {
@@ -670,7 +669,7 @@ public class App {
 				totalErrorPoint);
 		*/
 
-		HashMap<String,String> lastPeriodResults = getLastPeriodResults(config);
+		HashMap<String,String> lastPeriodResults = getLastPeriodResults(config.LAST_RESULT_PATH);
 		File file = new File(config.LAST_RESULT_PATH + "/lastPeriodResult.txt");
 		float lastRate = 1;
 		if (file.exists()) {

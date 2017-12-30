@@ -70,6 +70,8 @@ public class Config {
 	/**上一次结果的日志路径*/
 	public String LAST_RESULT_PATH = "/var/lib/jenkins/workspace/IoTDBWeeklyTest/iotdb-benchmark/logs";
 
+	public String REMOTE_LAST_RESULT_PATH = "/home/liurui/github/iotdb-benchmark/logs";
+
 	public String OTHER_MODE_CHOICE = "1";
 	/**是否运行在OTHER模式下*/
 	public boolean IS_OTHER_MODE = false;
