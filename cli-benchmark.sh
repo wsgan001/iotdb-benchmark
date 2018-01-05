@@ -62,7 +62,8 @@ ssh $SERVER_HOST "touch $LOG_STOP_FLAG_PATH/log_stop_flag"
 
 
 if [ "${DB#*=}" = "IoTDB" -a "${QUERY_MODE#*=}" = "false" ]; then
-    sleep 10
+    sleep 5
+    wait
     ssh $SERVER_HOST "tail -n 2 $REMOTE_BENCHMARK_HOME/logs/log_result_info.txt" >> $BENCHMARK_HOME/logs/log_info.log
     ssh $SERVER_HOST "tail -n 2 $REMOTE_BENCHMARK_HOME/logs/log_result_info.txt" >> $BENCHMARK_HOME/logs/log_result_info.txt
 fi
