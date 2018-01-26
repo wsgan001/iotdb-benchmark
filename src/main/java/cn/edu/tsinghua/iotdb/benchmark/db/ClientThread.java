@@ -87,12 +87,11 @@ public class ClientThread implements Runnable{
 
 			//overflow mode 2 related variables initial
 			Random random = new Random(config.QUERY_SEED);
-			LinkedList<Integer> before = new LinkedList<>();
+//			LinkedList<Integer> before = new LinkedList<>();
             int maxIndex = (int) (config.CACHE_NUM * config.LOOP * config.OVERFLOW_RATIO);
-			for(int beforeIndex = 0;beforeIndex < maxIndex; beforeIndex++){
-			    before.add(beforeIndex);
-            }
-
+//			for(int beforeIndex = 0;beforeIndex < maxIndex; beforeIndex++){
+//			    before.add(beforeIndex);
+//            }
 			for (int m = 0; m < clientDevicesNum; m++) {
 				deviceCodes.add(config.DEVICE_CODES.get(index * clientDevicesNum + m));
 			}
@@ -124,7 +123,7 @@ public class ClientThread implements Runnable{
                                     i,
                                     totalTime,
                                     errorCount,
-                                    before,
+                                    null,
                                     maxIndex,
                                     random);
                         }
