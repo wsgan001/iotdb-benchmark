@@ -1202,7 +1202,7 @@ public class IoTDB implements IDatebase {
     @Override
     public long getTotalTimeInterval() throws SQLException {
         long startTime = Constants.START_TIMESTAMP, endTime = Constants.START_TIMESTAMP;
-        String sql = "select MAX_TIME( s_0 ) from " + Constants.ROOT_SERIES_NAME + ".group_0.d_0";
+        String sql = "select MAX_TIME( s_0 ) from " + Constants.ROOT_SERIES_NAME + ".d_0";
         Statement statement = connection.createStatement();
         statement.execute(sql);
         ResultSet resultSet = statement.getResultSet();
@@ -1211,7 +1211,7 @@ public class IoTDB implements IDatebase {
         }
         statement.close();
 
-        sql = "select MIN_TIME( s_0 ) from " + Constants.ROOT_SERIES_NAME + ".group_0.d_0";
+        sql = "select MIN_TIME( s_0 ) from " + Constants.ROOT_SERIES_NAME + ".d_0";
         statement = connection.createStatement();
         statement.execute(sql);
         resultSet = statement.getResultSet();
