@@ -1418,7 +1418,7 @@ public class IoTDB implements IDatebase {
         devices = new ArrayList<>();
         sensorList = new ArrayList<>();
         devices.add(0);
-        devices.add(1);
+//        devices.add(1);
         long a = 0;
         IoTDB ioTDB = null;
         try {
@@ -1430,7 +1430,10 @@ public class IoTDB implements IDatebase {
         //sql = ioTDB.createQuerySQLStatment(devices, config.QUERY_SENSOR_NUM, "max_time", sensorList);
         //sql = ioTDB.createQuerySQLStatment(devices, 4, sensorList);
         //聚合函数
-        sql = ioTDB.createQuerySQLStatment(devices, 3, "max_value", 1000000, 1000000 + config.QUERY_INTERVAL, sensorList);
+//        sql = ioTDB.createQuerySQLStatment(devices, 3, "max_value", 1000000, 1000000 + config.QUERY_INTERVAL, sensorList);
+
+        sql = ioTDB.createQuerySQLStatment(devices, config.QUERY_SENSOR_NUM, 100000000,
+                100000000 + config.QUERY_INTERVAL, sensorList);
         //不带filter的聚合查询
         // sql = ioTDB.createQuerySQLStatment(devices, 3, "max_value", sensorList);
         // 带value条件带聚合查询

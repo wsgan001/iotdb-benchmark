@@ -249,7 +249,7 @@ public class InfluxDBV2 implements IDatebase {
 		long startTime = Constants.START_TIMESTAMP;
 		long endTime = Constants.START_TIMESTAMP;
 		
-		String sql = "select first(s_0) from group_3 ";
+		String sql = "select first(s_0) from perform ";
 		Query q = new Query(sql, config.INFLUX_DB_NAME);
 		QueryResult results = influxDB.query(q);
 
@@ -270,7 +270,7 @@ public class InfluxDBV2 implements IDatebase {
 			}
 		} // for
 
-		sql = "select last(s_0) from group_3 ";
+		sql = "select last(s_0) from perform ";
 		q = new Query(sql, config.INFLUX_DB_NAME);
 		results = influxDB.query(q);
 		for (QueryResult.Result result : results.getResults()) {
