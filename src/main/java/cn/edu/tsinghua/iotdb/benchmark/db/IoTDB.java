@@ -681,18 +681,17 @@ public class IoTDB implements IDatebase {
 
             startTimeStamp = System.nanoTime();
             statement.execute(sql);
-            ResultSet resultSet = statement.getResultSet();
-            while (resultSet.next()) {
-                line++;
-//				int sensorNum = sensorList.size();
-//				builder.append(" \ntimestamp = ").append(resultSet.getString(0)).append("; ");
-//				for (int i = 1; i <= sensorNum; i++) {
-//					builder.append(resultSet.getString(i)).append("; ");
-//				}	
-            }
-            statement.close();
+//            ResultSet resultSet = statement.getResultSet();
+//            while (resultSet.next()) {
+//                line++;
+////				int sensorNum = sensorList.size();
+////				builder.append(" \ntimestamp = ").append(resultSet.getString(0)).append("; ");
+////				for (int i = 1; i <= sensorNum; i++) {
+////					builder.append(resultSet.getString(i)).append("; ");
+////				}
+//            }
             endTimeStamp = System.nanoTime();
-
+            statement.close();
 //			LOGGER.info("{}",builder.toString());
             client.setTotalPoint(client.getTotalPoint() + line * config.QUERY_SENSOR_NUM * config.QUERY_DEVICE_NUM);
             client.setTotalTime(client.getTotalTime() + endTimeStamp - startTimeStamp);
