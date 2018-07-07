@@ -681,6 +681,8 @@ public class IoTDB implements IDatebase {
 
             startTimeStamp = System.nanoTime();
             statement.execute(sql);
+            ResultSet resultSet = statement.getResultSet();
+            resultSet.next();
 //            ResultSet resultSet = statement.getResultSet();
 //            while (resultSet.next()) {
 //                line++;
