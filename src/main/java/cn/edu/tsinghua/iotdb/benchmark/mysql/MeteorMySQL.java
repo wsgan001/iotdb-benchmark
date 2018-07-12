@@ -70,7 +70,7 @@ public class MeteorMySQL {
 
             if (!hasTable("current_wind_profile_station_RAD")) {
                 stat.executeUpdate("create table current_wind_profile_station_RAD"
-                        + "(station varchar(6000), "
+                        + "(station varchar(60), "
                         + "monitor_time BIGINT, "
                         + "data_file BLOB,"
                         + "primary key(station, monitor_time))");
@@ -79,7 +79,7 @@ public class MeteorMySQL {
 
             if (!hasTable("current_wind_profile_station_ROBS")) {
                 stat.executeUpdate("create table current_wind_profile_station_ROBS"
-                        + "(station varchar(6000), "
+                        + "(station varchar(60), "
                         + "monitor_time BIGINT, "
                         + "data_file BLOB,"
                         + "primary key(station, monitor_time))");
