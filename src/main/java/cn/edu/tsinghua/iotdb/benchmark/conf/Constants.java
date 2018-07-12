@@ -36,7 +36,7 @@ public class Constants {
 	public static final String MODE_CLIENT_SYSTEM_INFO = "clientSystemInfo";
 	public static final String MODE_INSERT_TEST_WITH_USERDEFINED_PATH = "insertTestWithUserDefinedPath";
 	public static final String MODE_EXECUTE_SQL_FROM_FILE = "executeSQLFromFile";
-
+	public static final String MODE_MYSQL_TEST = "mysql";
 
 	public static final String EXE_SQL_FROM_FILE_MODE = "1";
 

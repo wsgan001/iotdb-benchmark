@@ -6,10 +6,12 @@ import cn.edu.tsinghua.iotdb.benchmark.conf.Constants;
 import cn.edu.tsinghua.iotdb.benchmark.db.*;
 import cn.edu.tsinghua.iotdb.benchmark.loadData.Resolve;
 import cn.edu.tsinghua.iotdb.benchmark.loadData.Storage;
+import cn.edu.tsinghua.iotdb.benchmark.mysql.MeteorMySQL;
 import cn.edu.tsinghua.iotdb.benchmark.mysql.MySqlLog;
 import cn.edu.tsinghua.iotdb.benchmark.sersyslog.*;
 import cn.edu.tsinghua.iotdb.benchmark.tool.ImportDataFromCSV;
 import cn.edu.tsinghua.iotdb.benchmark.tool.MetaDateBuilder;
+import cn.edu.tsinghua.iotdb.benchmark.utils.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +55,85 @@ public class App {
             case Constants.MODE_CLIENT_SYSTEM_INFO:
                 clientSystemInfo(config);
                 break;
+            case Constants.MODE_MYSQL_TEST:
+                mysqlTest(config);
             default:
                 throw new SQLException("unsupported mode " + config.BENCHMARK_WORK_MODE);
         }
 
     }// main
+
+    private static void mysqlTest(Config config) {
+        MeteorMySQL meteorMySQL = new MeteorMySQL();
+        meteorMySQL.initTable();
+        ArrayList<String> origin_tables = new ArrayList<>();
+        origin_tables.add("wind_profile_station_RAD");
+        origin_tables.add("wind_profile_station_ROBS");
+        final String CURRENT_PREFIX = "current_";
+        final String HISTORY_PREFIX = "history_";
+//        String RAD_current_table_name = "current_wind_profile_station_RAD";
+//        String ROBS_current_table_name = "current_wind_profile_station_ROBS";
+//        String RAD_history_table_name = "history_wind_profile_station_RAD";
+//        String ROBS_history_table_name = "history_wind_profile_station_ROBS";
+
+        String dataFilePath = "./datafile";
+        File data_file = new File(dataFilePath);
+        if (!data_file.exists()) {
+            try {
+                FileWriter fileWriter = new FileWriter(dataFilePath);
+                fileWriter.write("This is a data file. ");
+                while ((data_file.length() / 1024) < 50) {
+                    fileWriter.write("This is a data file. ");
+                }
+                fileWriter.close();
+            } catch (IOException e) {
+                LOGGER.error("create data file failed.");
+            }
+        }
+
+        ArrayList<String> stations = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            stations.add("station_" + i);
+        }
+
+        String START_TIME = "2017-11-1T00:00:00+08:00";
+        long START_TIMESTAMP = TimeUtils.convertDateStrToTimestamp(START_TIME);
+        long currentTimeOffset = 0;
+        int cutHours = 24;
+
+        long startTime;
+        long endTime;
+        float elapseTime;
+        float totalTime = 0;
+        for (int loop = 0; loop < config.LOOP; loop++) {
+            startTime = System.nanoTime();
+
+            if (currentTimeOffset % (3600000 * cutHours) == 0) {
+                for (String table : origin_tables) {
+                    if (meteorMySQL.hasTable(HISTORY_PREFIX + table)) {
+                        meteorMySQL.deleteTable(HISTORY_PREFIX + table);
+                    }
+                    meteorMySQL.renameTable(CURRENT_PREFIX + table, HISTORY_PREFIX + table);
+                }
+                meteorMySQL.initTable();
+            }
+
+
+            for (String station : stations) {
+                for (String table : origin_tables) {
+                    meteorMySQL.insertIntoTable(CURRENT_PREFIX + table, station, START_TIMESTAMP + currentTimeOffset, data_file);
+                }
+            }
+            currentTimeOffset += 360000;
+
+            endTime = System.nanoTime();
+            elapseTime = (endTime - startTime) / 1000000.0f;
+            totalTime += elapseTime;
+            LOGGER.info("Executed loop ,{}, latency of this loop: ,{}, ms, total time: ,{}, ms", loop, elapseTime, totalTime);
+        }
+
+
+    }
 
     /**
      * 将数据从CSV文件导入IOTDB
@@ -79,7 +155,7 @@ public class App {
         if (dir.exists() && dir.isDirectory()) {
             File file = new File(config.LOG_STOP_FLAG_PATH + "/log_stop_flag");
             int interval = config.INTERVAL;
-            HashMap<IoUsage.IOStatistics,Float> ioStatistics;
+            HashMap<IoUsage.IOStatistics, Float> ioStatistics;
             // 检测所需的时间在目前代码的参数下至少为2秒
             LOGGER.info("----------New Test Begin with interval about {} s----------", interval + 2);
             while (true) {
@@ -162,8 +238,8 @@ public class App {
 
             if (dir.exists() && dir.isDirectory()) {
                 File file = new File(config.LOG_STOP_FLAG_PATH + "/log_stop_flag");
-                HashMap<FileSize.FileSizeKinds,Double> fileSizeStatistics;
-                HashMap<IoUsage.IOStatistics,Float> ioStatistics;
+                HashMap<FileSize.FileSizeKinds, Double> fileSizeStatistics;
+                HashMap<IoUsage.IOStatistics, Float> ioStatistics;
                 int interval = config.INTERVAL;
                 // 检测所需的时间在目前代码的参数下至少为2秒
                 LOGGER.info("----------New Test Begin with interval about {} s----------", interval + 2);

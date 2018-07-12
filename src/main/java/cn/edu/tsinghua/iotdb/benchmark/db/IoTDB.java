@@ -36,7 +36,7 @@ public class IoTDB implements IDatebase {
     private ProbTool probTool;
     private final double unitTransfer = 1000000000.0;
 
-    public IoTDB(long labID) throws ClassNotFoundException, SQLException {
+    public IoTDB(long labID) throws ClassNotFoundException {
         Class.forName(TsfileJDBCConfig.JDBC_DRIVER_NAME);
         config = ConfigDescriptor.getInstance().getConfig();
         points = new ArrayList<>();
