@@ -118,7 +118,7 @@ public class App {
                 }
                 meteorMySQL.initTable();
                 long end = System.nanoTime();
-                LOGGER.info("Delete history table in loop ,{}, refresh latency: ,{}, ms", loop, (float)(end-start)/1000000.0f);
+                LOGGER.error("Delete history table in loop ,{}, refresh latency: ,{}, ms", loop, (float)(end-start)/1000000.0f);
             }
 
 
