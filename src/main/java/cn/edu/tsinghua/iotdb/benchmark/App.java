@@ -109,6 +109,7 @@ public class App {
             startTime = System.nanoTime();
 
             if (currentTimeOffset % (3600000 * cutHours) == 0) {
+                long start = System.nanoTime();
                 for (String table : origin_tables) {
                     if (meteorMySQL.hasTable(HISTORY_PREFIX + table)) {
                         meteorMySQL.deleteTable(HISTORY_PREFIX + table);
@@ -116,6 +117,8 @@ public class App {
                     meteorMySQL.renameTable(CURRENT_PREFIX + table, HISTORY_PREFIX + table);
                 }
                 meteorMySQL.initTable();
+                long end = System.nanoTime();
+                LOGGER.info("Delete history table in loop ,{}, refresh latency: ,{}, ms", loop, (float)(end-start)/1000000.0f);
             }
 
 
