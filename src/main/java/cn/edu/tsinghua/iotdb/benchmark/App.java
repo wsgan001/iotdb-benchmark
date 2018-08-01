@@ -508,6 +508,8 @@ public class App {
                 return new InfluxDBFactory();
 			case Constants.DB_OPENTS:
 				return new OpenTSDBFactory();
+            case Constants.DB_MYSQL:
+                return new MySQLFactory();
             default:
                 throw new SQLException("unsupported database " + config.DB_SWITCH);
         }
