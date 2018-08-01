@@ -173,6 +173,8 @@ public class Config {
 
 	//mysql相关参数
 	// mysql服务器URL以及用户名密码
+	public String MYSQL_LOG_URL = "jdbc:mysql://166.111.141.168:3306/benchmark?"
+			+ "user=root&password=Ise_Nel_2017&useUnicode=true&characterEncoding=UTF8&useSSL=false";
 	public String MYSQL_URL = "jdbc:mysql://166.111.141.168:3306/benchmark?"
 			+ "user=root&password=Ise_Nel_2017&useUnicode=true&characterEncoding=UTF8&useSSL=false";
 	//是否将结果写入mysql

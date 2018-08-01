@@ -46,13 +46,13 @@ public class MySqlLog {
             day = sdf.format(date);
             try {
                 Class.forName(Constants.MYSQL_DRIVENAME);
-                mysqlConnection = DriverManager.getConnection(config.MYSQL_URL);
+                mysqlConnection = DriverManager.getConnection(config.MYSQL_LOG_URL);
                 initTable();
             } catch (SQLException e) {
-                LOGGER.error("mysql 初始化失败，原因是：{}", e.getMessage());
+                LOGGER.error("mysql log 初始化失败，原因是：{}", e.getMessage());
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
-                LOGGER.error("mysql 连接初始化失败，原因是：{}", e.getMessage());
+                LOGGER.error("mysql log 连接初始化失败，原因是：{}", e.getMessage());
                 e.printStackTrace();
             }
         }

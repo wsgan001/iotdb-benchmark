@@ -331,7 +331,7 @@ IoTDB-benchmark can automatically store test information into MySQL for further 
 
 ```
 IS_USE_MYSQL=true
-MYSQL_URL=jdbc:mysql://[DB_HOST]:3306/[DBName]?user=[UserName]&password=[PassWord]&useUnicode=true&characterEncoding=UTF8&useSSL=false
+MYSQL_LOG_URL=jdbc:mysql://[DB_HOST]:3306/[DBName]?user=[UserName]&password=[PassWord]&useUnicode=true&characterEncoding=UTF8&useSSL=false
 ```
 
 If you do not need this function, just set 'IS_USE_MYSQL=false' will be fine.
