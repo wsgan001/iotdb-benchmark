@@ -249,7 +249,7 @@ public class OpenTSDB implements IDatebase {
 				}
 				queryMap.put("queries", list);
 				break;
-			case 7:// groupBy查询（暂时只有一个时间段）
+			case 7:// groupBy查询（暂时只有一个时间段）y
 				list = getSubQueries(devices);
 				for (Map<String, Object> subQuery : list) {
 					subQuery.put("downsample", config.TIME_UNIT + "ms-" + config.QUERY_AGGREGATE_FUN);

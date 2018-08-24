@@ -469,12 +469,17 @@ public class App {
                     totalTime / 1000000000.0f, config.CLIENT_NUMBER,
                     1000000000.0f * (totalPoints - totalErrorPoint) / (float) totalTime);
 
-            LOGGER.info("Total error num is {}, create schema cost {} second. Total elapse time: {} second", totalErrorPoint, createSchemaTime, insertElapseTime);
+            LOGGER.info("Total error num is {}, create schema cost {} second. Total elapse time: {} second (mean rate {} points/s)",
+                    totalErrorPoint,
+                    createSchemaTime,
+                    insertElapseTime,
+                    (totalPoints - totalErrorPoint) / insertElapseTime);
 
             mysql.saveResult("createSchemaTime(s)", "" + createSchemaTime);
             mysql.saveResult("totalPoints", "" + totalPoints);
             mysql.saveResult("totalTime(s)", "" + totalTime / 1000000000.0f);
             mysql.saveResult("totalErrorPoint", "" + totalErrorPoint);
+            mysql.saveResult("totalElapseTime", "" + insertElapseTime);
             mysql.closeMysql();
 
         } // else--
