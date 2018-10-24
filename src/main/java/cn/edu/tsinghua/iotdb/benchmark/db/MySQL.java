@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class MySQL implements IDatebase{
+public class MySQL implements IDatebase {
     private static final Logger LOGGER = LoggerFactory.getLogger(MySQL.class);
     private Connection connection;
     private static Config config;
@@ -30,15 +30,11 @@ public class MySQL implements IDatebase{
     private ProbTool probTool;
     private final double unitTransfer = 1000000000.0;
 
-    public MySQL(long labID){
-        this.labID = labID;
+    public MySQL(long labID) {
         config = ConfigDescriptor.getInstance().getConfig();
+        this.labID = labID;
         mySql = new MySqlLog();
         sensorRandom = new Random(1 + config.QUERY_SEED);
-    }
-
-    @Override
-    public void init() throws SQLException {
         try {
             Class.forName(Constants.MYSQL_DRIVENAME);
             connection = DriverManager.getConnection(config.MYSQL_URL);
@@ -53,15 +49,38 @@ public class MySQL implements IDatebase{
     }
 
     @Override
+    public void init() throws SQLException {
+        Statement stat = null;
+        try {
+            stat = connection.createStatement();
+            for (int group_index = 0; group_index < config.GROUP_NUMBER; group_index++) {
+                String sql = genDropTableSQL(group_index);
+                stat.executeUpdate(sql);
+                LOGGER.info("Drop table group_{} success!", group_index);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Drop table group_{} failed, error: {}", e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stat != null)
+                    stat.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     public void createSchema() throws SQLException {
         Statement stat = null;
         try {
             stat = connection.createStatement();
 
-            for(int group_index = 0;group_index<config.GROUP_NUMBER;group_index++){
+            for (int group_index = 0; group_index < config.GROUP_NUMBER; group_index++) {
                 String sql = genCreateTableSQL(group_index);
                 stat.executeUpdate(sql);
-                LOGGER.info("Table SERVER_MODE create success!");
+                LOGGER.info("Table group_{} create success!", group_index);
             }
         } catch (SQLException e) {
             LOGGER.error("mysql schema创建失败,原因是：{}", e.getMessage());
@@ -76,11 +95,15 @@ public class MySQL implements IDatebase{
         }
     }
 
+    private String genDropTableSQL(int group_index) {
+        return "drop table group_" + group_index;
+    }
+
     private String genCreateTableSQL(int group_index) {
         StringBuilder sb = new StringBuilder();
         sb.append("create table group_" + group_index);
         sb.append(" (timestamp BIGINT, device varchar(30),");
-        for(int sensor_id=0;sensor_id<config.SENSOR_NUMBER;sensor_id++){
+        for (int sensor_id = 0; sensor_id < config.SENSOR_NUMBER; sensor_id++) {
             sb.append(" s_" + sensor_id + " DOUBLE,");
         }
         sb.append(" primary key(timestamp,device))");
