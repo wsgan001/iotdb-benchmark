@@ -23,6 +23,5 @@
 *.tar.gz
 *.tar
 
-./conf/*.properties
+**/conf/*.properties
 **/routine
-/target/
