@@ -862,7 +862,7 @@ public class IoTDB implements IDatebase {
             builder.append(",").append(Function.getValueByFuntionidAndParam(param, currentTime));
         }
         builder.append(")");
-        LOGGER.debug("createSQLStatment:  {}", builder.toString());
+        LOGGER.error("createSQLStatment:  {}", builder.toString());
         return builder.toString();
     }
 
@@ -885,7 +885,8 @@ public class IoTDB implements IDatebase {
         }
         builder.append(")");
         //LOGGER.debug("timestampIndex:  ,{}", timestampIndex);
-        LOGGER.debug("createSQLStatment:  {}", builder.toString());
+        LOGGER.error("createSQLStatment:  {}", builder.toString());
+
         return builder.toString();
     }
 
@@ -909,7 +910,7 @@ public class IoTDB implements IDatebase {
             e.printStackTrace();
         }
         builder.append(")");
-        LOGGER.debug("createGenDataSQLStatment:  {}", builder.toString());
+        LOGGER.error("createGenDataSQLStatment:  {}", builder.toString());
         return builder.toString();
     }
 
